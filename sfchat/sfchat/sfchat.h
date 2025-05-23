@@ -1,32 +1,38 @@
 #pragma once
 #include <string>
+#include <unordered_map>
+#include <memory>
 
 using namespace std;
 
-class User_Account
-{
+class UserAccount {
 private:
-	string user_login{};
-	string user_password{};
-	string user_name{};
+    string login;
+    string passwordHash;
+    string name;
 
 public:
-	User_Account();
-	User_Account(string user_login, string user_password, string user_name);
-	~User_Account();
+    UserAccount() = default;
+    UserAccount(string login, string passwordHash, string name);
 
-	string getUser_login() const;
-	void setUser_login(string value);
+    const string& getLogin() const;
+    const string& getPasswordHash() const;
+    const string& getName() const;
 
-	string getUser_password() const;
-	void setUser_password(string value);
-
-	string getUser_name() const;
-	void setUser_name(string value);
+    void setLogin(const string& value);
+    void setPasswordHash(const string& value);
+    void setName(const string& value);
 };
 
 string getCurrentTime();
 
-bool isUserExist(string);
+void clearScreen();
 
-bool authProcess(unique_ptr<User_Account>& ua_name);
+class App {
+public:
+    static void loadUsers(unordered_map<string, pair<string, string>>& users);
+    static bool isUserLoginExist(const unordered_map<string, pair<string, string>>& users, const string& login);
+    static bool isUserNameExist(const unordered_map<string, pair<string, string>>& users, const string& name);
+    static bool authProcess(unordered_map<string, pair<string, string>>& users, unique_ptr<UserAccount>& user);
+    static string hashPassword(const string& password);
+};
