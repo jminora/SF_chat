@@ -38,4 +38,5 @@ private:
     void uploadFile(const std::string& filename);
     void downloadFile(const std::string& filename);
     void sendQuit();
+    void readConfig();
 };

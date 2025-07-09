@@ -6,14 +6,14 @@ OBJDIR = obj
 BINDIR = bin
 TARGET = $(BINDIR)/sfchat
 
-SOURCES = $(wildcard $(SRCDIR)/*.cpp)
-OBJECTS = $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SOURCES))
+SOURCES = chatwork.cpp main.cpp sfchat.cpp tcpclient.cpp
+OBJECTS = $(patsubst %.cpp, $(OBJDIR)/%.o, $(SOURCES))
 
 $(TARGET): $(OBJECTS)
 	@mkdir -p $(BINDIR)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+$(OBJDIR)/%.o: %.cpp
 	@mkdir -p $(OBJDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
