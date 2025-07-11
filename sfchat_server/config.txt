@@ -1,0 +1,3 @@
+dsn=MySQL_testdb
+user=root
+pass=root

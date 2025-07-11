@@ -12,7 +12,7 @@ int main() {
 
 	std::unique_ptr<UserAccount> user = std::make_unique<UserAccount>();
 	
-	while (!App::authProcess(users, user)) {
+	while (!App::authProcess(users, user, chatclient)) {
 		// repeat until authorized
 	}
 	

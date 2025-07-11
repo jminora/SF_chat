@@ -17,17 +17,17 @@ typedef int SOCKET;
 
 class TCPServer {
 public:
-    TCPServer(int port);
-    ~TCPServer();
+	TCPServer(int port);
+	~TCPServer();
 
-    bool start();                        // Start the server and listen for connections
-    void handleClient(SOCKET clientSock); // Handle a single client session
+	bool start();                        // Start the server and listen for connections
+	void handleClient(SOCKET clientSock); // Handle a single client session
 
 private:
-    int port;
-    SOCKET serverSock;
+	int port;
+	SOCKET serverSock;
 
-    void initSockets();    // Platform-specific socket initialization
-    void cleanupSockets(); // Platform-specific socket cleanup
-    void closeSocket(SOCKET sock); // Close a socket
+	void initSockets();    // Platform-specific socket initialization
+	void cleanupSockets(); // Platform-specific socket cleanup
+	void closeSocket(SOCKET sock); // Close a socket
 };

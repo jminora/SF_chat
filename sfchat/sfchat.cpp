@@ -59,11 +59,12 @@ bool App::isUserNameExist(const std::unordered_map<std::string, std::pair<std::s
     return false;
 }
 
-bool App::authProcess(std::unordered_map<std::string, std::pair<std::string, std::string>>& users, std::unique_ptr<UserAccount>& user) {
+bool App::authProcess(std::unordered_map<std::string, std::pair<std::string, std::string>>& users, std::unique_ptr<UserAccount>& user, TCPClient& chatclient) {
     char choice;
     std::cout << "Welcome to SFChat!\n(1) Create account\n(2) Login\n(3) Exit\nChoice: ";
     std::cin >> choice;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    chatclient.download();
     clearScreen();
 
     switch (choice) {
@@ -100,6 +101,7 @@ bool App::authProcess(std::unordered_map<std::string, std::pair<std::string, std
         users[login] = { hashed, name };
 
         user = std::make_unique<UserAccount>(login, hashed, name);
+        chatclient.upload();
         return true;
     }
     case '2': {

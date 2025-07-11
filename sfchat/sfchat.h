@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
+#include "tcpclient.h"
 
 class UserAccount {
 private:
@@ -32,6 +33,6 @@ public:
     static void loadUsers(std::unordered_map<std::string, std::pair<std::string, std::string>>& users);
     static bool isUserLoginExist(const std::unordered_map<std::string, std::pair<std::string, std::string>>& users, const std::string& login);
     static bool isUserNameExist(const std::unordered_map<std::string, std::pair<std::string, std::string>>& users, const std::string& name);
-    static bool authProcess(std::unordered_map<std::string, std::pair<std::string, std::string>>& users, std::unique_ptr<UserAccount>& user);
+    static bool authProcess(std::unordered_map<std::string, std::pair<std::string, std::string>>& users, std::unique_ptr<UserAccount>& user, TCPClient& chatclient);
     static std::string hashPassword(const std::string& password);
 };

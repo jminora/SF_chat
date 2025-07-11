@@ -1,4 +1,5 @@
 #include "tcpserver.h"
+#include "db_transfer.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -76,6 +77,7 @@ bool TCPServer::start() {
 
 void TCPServer::handleClient(SOCKET clientSock) {
     char buffer[BUFFER_SIZE];
+    DbTransfer db;
 
     while (true) {
         std::string command_line;
@@ -150,6 +152,7 @@ void TCPServer::handleClient(SOCKET clientSock) {
         }
         else if (command == "QUIT") {
             std::cout << "Client requested to close connection.\n";
+            db.doDBTransfer();
             break;
         }
         else {

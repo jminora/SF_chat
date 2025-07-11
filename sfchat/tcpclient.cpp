@@ -86,7 +86,7 @@ void TCPClient::uploadFile(const std::string& filename) {
 		send(clientSock, buffer, in.gcount(), 0);
 	}
 
-	std::cout << "Uploaded: " << filename << "\n";
+	//std::cout << "Uploaded: " << filename << "\n";
 
 	// Wait for server confirmation
 	std::string response;
@@ -194,7 +194,8 @@ void TCPClient::upload() {
 	// Files to upload
 	std::vector<std::string> uploadList = {
 		"chat.txt",
-		"pchat.txt"
+		"pchat.txt",
+		"users.txt"
 	};
 
 	for (const auto& file : uploadList) {
@@ -211,7 +212,8 @@ void TCPClient::download() {
 	// Files to download
 	std::vector<std::string> downloadList = {
 		"chat.txt",
-		"pchat.txt"
+		"pchat.txt",
+		"users.txt"
 	};
 
 	for (const auto& file : downloadList) {

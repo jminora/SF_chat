@@ -1,2 +1,0 @@
-[2025-06-20 22:16:14] Test1: Hi all!
-[2025-06-23 19:44:42] Test1: Hi all from windows!
