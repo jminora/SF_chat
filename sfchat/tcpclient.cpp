@@ -58,6 +58,7 @@ bool TCPClient::connectToServer() {
 
 	if (connect(clientSock, (sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
 		std::cerr << "Connection failed.\n";
+		closeSocket(clientSock);
 		return false;
 	}
 
@@ -79,11 +80,20 @@ void TCPClient::uploadFile(const std::string& filename) {
 	std::ostringstream cmd;
 	cmd << "UPLOAD " << filename << " " << fileSize << "\n";
 	std::string cmdStr = cmd.str();
-	send(clientSock, cmdStr.c_str(), cmdStr.length(), 0);
+	
+	if (send(clientSock, cmdStr.c_str(), cmdStr.length(), 0) == SOCKET_ERROR)
+	{
+		std::cerr << "Failed to send UPLOAD command" << std::endl;
+		return;
+	}
 
 	char buffer[BUFFER_SIZE];
 	while (in.read(buffer, BUFFER_SIZE) || in.gcount() > 0) {
-		send(clientSock, buffer, in.gcount(), 0);
+		if (send(clientSock, buffer, static_cast<int>(in.gcount()), 0) == SOCKET_ERROR)
+		{
+			std::cerr << "Failed to send file" << std::endl;
+			return;
+		};
 	}
 
 	//std::cout << "Uploaded: " << filename << "\n";
@@ -91,9 +101,16 @@ void TCPClient::uploadFile(const std::string& filename) {
 	// Wait for server confirmation
 	std::string response;
 	char ch;
-	while (recv(clientSock, &ch, 1, 0) > 0) {
+	int result;
+	while ((result = recv(clientSock, &ch, 1, 0)) > 0) {
 		if (ch == '\n') break;
 		response += ch;
+	}
+
+	if (result <= 0)
+	{
+		std::cerr << "Connection lost while waiting fore server confirmation" << std::endl;
+		return;
 	}
 
 	if (response == "OK") {
@@ -108,7 +125,12 @@ void TCPClient::uploadFile(const std::string& filename) {
 void TCPClient::downloadFile(const std::string& filename) {
 	std::ostringstream cmd;
 	cmd << "DOWNLOAD " << filename << "\n";
-	send(clientSock, cmd.str().c_str(), cmd.str().length(), 0);
+	
+	if (send(clientSock, cmd.str().c_str(), cmd.str().length(), 0) == SOCKET_ERROR)
+	{
+		std::cerr << "Failed to send DOWNLOAD command" << std::endl;
+		return;
+	}
 
 	std::string filesize_str;
 	char ch;
@@ -122,7 +144,15 @@ void TCPClient::downloadFile(const std::string& filename) {
 		return;
 	}
 
-	size_t filesize = std::stoull(filesize_str);
+	size_t filesize;
+	try 
+	{
+	filesize = std::stoull(filesize_str);
+	} catch (const std::exception& e)
+	{
+		std::cerr << "Invalid file size received";
+		return;
+	}
 
 	std::ofstream out(filename, std::ios::binary);
 	if (!out) {
@@ -133,7 +163,7 @@ void TCPClient::downloadFile(const std::string& filename) {
 	size_t totalReceived = 0;
 	char buffer[BUFFER_SIZE];
 	while (totalReceived < filesize) {
-		int toRead = (filesize - totalReceived) < BUFFER_SIZE ? (filesize - totalReceived) : BUFFER_SIZE;
+		int toRead = static_cast<int>((filesize - totalReceived) < BUFFER_SIZE ? (filesize - totalReceived) : BUFFER_SIZE);
 		int bytesReceived = recv(clientSock, buffer, toRead, 0);
 		if (bytesReceived <= 0) {
 			std::cerr << "Connection lost during file download.\n";
