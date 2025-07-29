@@ -1,4 +1,5 @@
 #include "sfchat.h"
+#include "chatwork.h"
 #include <iostream>
 #include <fstream>
 #include <chrono>
@@ -66,7 +67,7 @@ bool App::authProcess(std::unordered_map<std::string, std::pair<std::string, std
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     chatclient.download();
     clearScreen();
-
+    
     switch (choice) {
     case '1': {
         std::string login, password, name;
@@ -102,6 +103,7 @@ bool App::authProcess(std::unordered_map<std::string, std::pair<std::string, std
 
         user = std::make_unique<UserAccount>(login, hashed, name);
         chatclient.upload();
+        
         return true;
     }
     case '2': {

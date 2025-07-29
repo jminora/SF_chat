@@ -1,10 +1,11 @@
 #pragma once
 
 #include "tcpclient.h"
-#include "sfchat.h"
+#include "logger.h"
 
 void runChatLoop(
     TCPClient& chatclient,
     std::unordered_map<std::string, std::pair<std::string, std::string>>& users,
-    std::unique_ptr<UserAccount>& user
+    std::unique_ptr<UserAccount>& user,
+    Logger& logger
 );
